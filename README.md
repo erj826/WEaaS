@@ -5,14 +5,14 @@ WEaaS is used as an alternative to OpenStack's slow APIs. By communicating direc
 
 ### Supported Endpoints
 Neutron:
-..* Port
+  * Port
 
 More info: https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/port.html
 
 Octavia:
-..* Load Balancer
-..* Listener
-..* Pool
-..* Member
+  * Load Balancer
+  * Listener
+  * Pool
+  * Member
 
 More info: https://docs.openstack.org/python-octaviaclient/latest/cli/index.html#loadbalancer

@@ -1,5 +1,5 @@
 # WEaaS
-Project for Red Hat. WEaaS is used in conjunction with OpenStack.
+Watch Endpoints as a Service project for Red Hat. WEaaS is used in conjunction with OpenStack.
 
 WEaaS is used as an alternative to OpenStack's slow APIs. By communicating directly with RabbitMQ, OpenStack's messaging service, WEaaS is able to return endpoint information more quickly.
 

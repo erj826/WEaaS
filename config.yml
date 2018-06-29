@@ -8,6 +8,6 @@
 #---
 endpoints:
   - openstack port delete
-
+  - openstack loadbalancer delete
 #---
 

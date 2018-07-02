@@ -1,5 +1,5 @@
 # 
-# By celebdor
+# Adapted from script by celebdor
 # Found at: https://gist.github.com/celebdor/06cf4bf06637a72358b982832c366429
 #
 
@@ -19,22 +19,25 @@ class Worker(ConsumerMixin):
                          callbacks=[self.on_message])]
  
     def on_message(self, body, message):
-        print('{1}'.format(body))
+        print('{0}'.format(body))
         message.ack()
+
+    #Additional Error Checking:
+    # 
+    #    def on_connection_error(*args):
+    #        print('ERROR: {}'.format(args))
+    # 
+    #    def on_consume_ready(self, connection, channel, consumers):
+    #        print("On consume ready: {}, {}, {}".format(connection, channel, consumers))
+    # 
+    #    def on_decode_error(self, message, exc):
+    #        print("On decode error: {}, {}".format(message, exc))
  
-#    def on_connection_error(*args):
-#        print('ERROR: {}'.format(args))
-# 
-#    def on_consume_ready(self, connection, channel, consumers):
-#        print("On consume ready: {}, {}, {}".format(connection, channel, consumers))
-# 
-#    def on_decode_error(self, message, exc):
-#        print("On decode error: {}, {}".format(message, exc))
+
+def startListener():  
+    exchange = Exchange('neutron', type='topic', durable=False, auto_delete=False)
+    queues = [Queue('notifications.info', exchange, routing_key='notifications.info', durable=False, auto_delete=False, exclusive=False)]
  
- 
-exchange = Exchange('neutron', type='topic', durable=False, auto_delete=False)
-queues = [Queue('notifications.info', exchange, routing_key='notifications.info', durable=False, auto_delete=False, exclusive=False)]
- 
-with Connection(rabbit_url, heartbeat=4) as conn:
+    with Connection(rabbit_url, heartbeat=4) as conn:
         worker = Worker(conn, queues)
         worker.run()

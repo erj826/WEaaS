@@ -7,14 +7,17 @@
 #
 
 
+import rabbitListener
 from yaml import load
+from threading import Thread
 from flask import Flask
 app = Flask(__name__)
 
 
+@app.route('/')
 def main():
     endpoints = readYaml()
-    print(endpoints)
+    listenerThread = Thread(target = rabbitListener.startListener)
 
 
 def readYaml():
@@ -24,4 +27,4 @@ def readYaml():
 
 
 if __name__ == "__main__":
-    main()
+    app.run()

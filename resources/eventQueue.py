@@ -2,9 +2,7 @@
 #erjacobs@redhat.com
 #2 July 2018
 #
-#
 #Event queue class 
-#
 #
 
 class eventQueue:
@@ -19,5 +17,3 @@ class eventQueue:
 
     def dequeue(self):
         return self.events.pop(0)
-
- 

@@ -9,7 +9,7 @@
 
 import resources.rabbitListener as listener
 from yaml import load
-from threading import Thread
+from multiprocessing import Process
 from flask import Flask
 app = Flask(__name__)
 
@@ -17,14 +17,15 @@ app = Flask(__name__)
 @app.route('/')
 def main():
     endpoints = readYaml()
-    listenerThread = Thread(target = listener.startListener)
-    
+    worker = listener.createListener()
+    if worker is not None:
+        worker.run()
+
 
 def readYaml():
     """Returns a list of endpoints from config.yml"""
     configData = load(file('config.yml', 'r'))
     return configData['endpoints']
 
-
 if __name__ == "__main__":
-    app.run(host='38.145.32.253', port=22)
+    app.run()

@@ -12,7 +12,7 @@ class eventQueue:
     def isEmpty(self):
         return self.events == []
 
-    def enqueue(self, event):                                                                                                                                                                                     
+    def enqueue(self, event):
         self.events.insert(len(self.events), event)
 
     def dequeue(self):

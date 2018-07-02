@@ -7,7 +7,7 @@
 #
 
 
-import rabbitListener
+import resources.rabbitListener as listener
 from yaml import load
 from threading import Thread
 from flask import Flask
@@ -17,8 +17,8 @@ app = Flask(__name__)
 @app.route('/')
 def main():
     endpoints = readYaml()
-    listenerThread = Thread(target = rabbitListener.startListener)
-
+    listenerThread = Thread(target = listener.startListener)
+    
 
 def readYaml():
     """Returns a list of endpoints from config.yml"""
@@ -27,4 +27,4 @@ def readYaml():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='38.145.32.253', port=22)

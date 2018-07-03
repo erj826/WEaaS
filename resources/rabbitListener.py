@@ -2,8 +2,7 @@
 # Adapted from script by celebdor
 # Found at: https://gist.github.com/celebdor/06cf4bf06637a72358b982832c366429
 #
-
-from eventQueue import eventQueue 
+ 
 from kombu import Connection, Exchange, Queue
 from kombu.mixins import ConsumerMixin
  
@@ -13,15 +12,13 @@ class Worker(ConsumerMixin):
     def __init__(self, connection, queues):
         self.connection = connection
         self.queues = queues
-        self.Events = eventQueue()
  
     def get_consumers(self, Consumer, channel):
         return [Consumer(queues=self.queues,
                          callbacks=[self.on_message])]
  
     def on_message(self, body, message):
-        self.Events.enqueue('{0}'.format(body))
-        print str(self.Events)
+        print('{0}'.format(body))
         message.ack()
 
     #Additional Error Checking:

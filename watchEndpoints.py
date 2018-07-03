@@ -9,17 +9,12 @@
 
 import resources.rabbitListener as listener
 from yaml import load
-from multiprocessing import Process
 from flask import Flask
+
 app = Flask(__name__)
+worker = listener.createListener()
 
 
-@app.route('/')
-def main():
-    endpoints = readYaml()
-    worker = listener.createListener()
-    if worker is not None:
-        worker.run()
 
 
 def readYaml():
@@ -29,3 +24,4 @@ def readYaml():
 
 if __name__ == "__main__":
     app.run()
+    endpoints = readYaml()

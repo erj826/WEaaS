@@ -6,8 +6,13 @@
 #
 #Put desired endpoints in list below:
 #---
-endpoints:
-  - openstack port delete
-  - openstack loadbalancer delete
+neutron:
+  - port
+
+octavia:
+  - load balancer
+  - listener
+  - pool
+  - member
 #---
 

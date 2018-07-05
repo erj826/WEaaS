@@ -18,6 +18,7 @@ class Worker(ConsumerMixin):
                          callbacks=[self.on_message])]
  
     def on_message(self, body, message):
+        #Add to queues based on message type
         print('{0}'.format(body))
         message.ack()
 

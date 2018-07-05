@@ -2,13 +2,15 @@
 #erjacobs@redhat.com
 #29 June 2018
 #
+#
 #Flask application for the watch endpoints service
 #
 #
 
 
-import resources.rabbitListener as listener
 import itertools
+import resources.rabbitListener as listener
+from resources.eventQueue import eventQueue
 from yaml import load
 from multiprocessing import Process, Manager
 from flask import Flask
@@ -19,13 +21,18 @@ app = Flask(__name__)
 
 @app.route('/')
 def needsEndpoint():
-    return "Please provide an endpoint in the URL\n"
+    """No endpoint given"""
+    return "No endpoint specified in the URL!\n"
 
 
 @app.route('/<endpoint>')
 def addQueueToDict(endpoint):
+    """Initialize an empty queue for a client in the shared dictionary"""
     if endpoint in endpoints:
-        pass
+        #Following line isn't doing anything. Should be appending a queue to the list 
+        #D[endpoint].append(eventQueue())
+        #print D
+        return "added event queue to %s key\n" % endpoint
     else:
         return "Invalid endpoint!\n"
 
@@ -38,18 +45,18 @@ def readYaml():
     return endpoints
 
 
-def initializeDict(D, endpoints):
+def initializeDict(endpoints):
     """Initializes the shared dictionary to store endpoint data"""
     for endpoint in endpoints:
-        D[endpoint] = []
-    return
+        D[endpoint] = manager.list()
 
 
 if __name__ == "__main__":
     worker = listener.createListener()
     endpoints = readYaml()
     manager = Manager()
-    D = initializeDict(manager.dict(), endpoints)
+    D = manager.dict()
+    initializeDict(endpoints)
     startListener = Process(target=worker.run).start()
     app.run()
 

@@ -4,13 +4,13 @@
 #
 #Configuration file specifying which endpoints to watch in OpenStack 
 #
-#Put desired endpoints in list below:
+#Put endpoints in list below:
 #---
 neutron:
   - port
 
 octavia:
-  - load balancer
+  - loadbalancer
   - listener
   - pool
   - member

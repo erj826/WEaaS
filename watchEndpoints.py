@@ -32,7 +32,7 @@ def addQueueToDict(endpoint):
     """Initialize an empty queue for a client in the shared dictionary"""
     if endpoint in endpoints:
         D[endpoint].append(deque())
-        return 'added event queue to %s key\n' % endpoint
+        return 'Added event queue to %s key.\n' % endpoint
     else:
         return 'Invalid endpoint!\n'
 

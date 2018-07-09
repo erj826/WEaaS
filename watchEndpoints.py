@@ -12,7 +12,7 @@ import itertools
 import resources.rabbitListener as listener
 import os
 from yaml import load
-from flask import Flask, request
+from flask import Flask, Response
 from threading import Thread
 from collections import deque
 
@@ -28,6 +28,18 @@ def needsEndpoint():
 
 
 @app.route('/<endpoint>')
+def index(endpoint):
+    """Adds a deque to the shared dictionary and performs chunked 
+    trasfer via http back to client"""
+    addQueueToDict(endpoint)
+    #Transfer
+    def generate():
+        while True:
+            if len(D[endpoint][0]) > 0: 
+                yield D[endpoint][0].popleft()
+    return Response(generate(), mimetype='application/json')
+    
+
 def addQueueToDict(endpoint):
     """Initialize an empty queue for a client in the shared dictionary"""
     if endpoint in endpoints:
@@ -61,8 +73,6 @@ if __name__ == "__main__":
     worker = listener.createListener(D)
     startListener = Thread(target=worker.run).start()
     app.run()
-    
-    #Perform chunked transfer via http back to client
     
     #Terminate app
     print('\n')

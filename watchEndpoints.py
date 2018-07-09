@@ -10,6 +10,7 @@
 
 import itertools
 import resources.rabbitListener as listener
+import os
 from yaml import load
 from flask import Flask, request
 from threading import Thread
@@ -51,9 +52,19 @@ def initializeDict(endpoints):
 
 
 if __name__ == "__main__":
-    worker = listener.createListener()
+    #Initialize shared dictionary D with endpoints
     endpoints = readYaml()
     D = {}
     initializeDict(endpoints)
+
+    #Create and start up listener thread
+    worker = listener.createListener(D)
     startListener = Thread(target=worker.run).start()
     app.run()
+    
+    #Perform chunked transfer via http back to client
+    
+    #Terminate app
+    print('\n')
+    os._exit(0)
+        

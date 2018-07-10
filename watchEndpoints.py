@@ -29,8 +29,8 @@ def needsEndpoint():
 
 @app.route('/<endpoint>')
 def index(endpoint):
-    """Adds a deque to the shared dictionary and performs chunked 
-    trasfer via http back to client"""
+    """Adds a deque to the shared dictionary and performs a 
+    transfer via http back to client"""
     addQueueToDict(endpoint)
     #Transfer
     def generate():

@@ -35,8 +35,11 @@ def index(endpoint):
     #Transfer
     def generate():
         while True:
-            if len(D[endpoint][0]) > 0: 
+            try:
                 yield D[endpoint][0].popleft()
+                D[endpoint] = rotate(D[endpoint])
+            except:
+                pass
     return Response(generate(), mimetype='application/json')
     
 
@@ -55,6 +58,11 @@ def readYaml():
     listsOfEndpoints = [config[service] for service in config]
     endpoints = list(itertools.chain.from_iterable(listsOfEndpoints))
     return endpoints
+
+
+def rotate(l):
+    """Rotates a list by 1"""
+    return l[1:] + l[:1]
 
 
 def initializeDict(endpoints):

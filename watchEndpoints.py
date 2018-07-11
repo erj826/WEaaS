@@ -80,7 +80,7 @@ if __name__ == "__main__":
     #Create and start up listener thread
     worker = listener.createListener(D)
     startListener = Thread(target=worker.run).start()
-    app.run()
+    app.run(threaded=True)
     
     #Terminate app
     print('\n')

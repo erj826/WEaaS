@@ -11,9 +11,9 @@
 import itertools
 import resources.rabbitListener as listener
 import os
+import threading
 from yaml import load
-from flask import Flask, Response
-from threading import Thread
+from flask import Flask, Response, stream_with_context
 from collections import deque
 
 
@@ -33,15 +33,23 @@ def index(endpoint):
     transfer via http back to client"""
     addQueueToDict(endpoint)
     #Transfer
+    print threading.enumerate()
     def generate():
         while True:
             try:
+                #for client in clientThreads():
+                #print 'I want to send an event to ' + str(client)
                 yield D[endpoint][0].popleft()
-                D[endpoint] = rotate(D[endpoint])
+                #D[endpoint] = rotate(D[endpoint])
             except:
                 pass
     return Response(generate(), mimetype='application/json')
-    
+
+
+def clientThreads():
+    """Returns a list of client threads running"""
+    return [thread for thread in threading.enumerate() if thread.name[0:6] == 'Thread']
+
 
 def addQueueToDict(endpoint):
     """Initialize an empty queue for a client in the shared dictionary"""
@@ -79,7 +87,7 @@ if __name__ == "__main__":
 
     #Create and start up listener thread
     worker = listener.createListener(D)
-    startListener = Thread(target=worker.run).start()
+    startListener = threading.Thread(target=worker.run, name="Listener").start()
     app.run(threaded=True)
     
     #Terminate app

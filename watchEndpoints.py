@@ -37,7 +37,7 @@ def index(endpoint):
         """Infinite loop listening for events in the deques"""
         while True:
             try:
-                yield C.deque.popleft()
+                yield C.deque.popleft() + "\n\n"
             except:
                 pass
     return Response(generate(), mimetype='application/json')

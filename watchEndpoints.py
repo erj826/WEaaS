@@ -13,8 +13,8 @@ import resources.rabbitListener as listener
 import os
 import threading
 from yaml import load
-from flask import Flask, Response, stream_with_context
-from collections import deque
+from flask import Flask, Response
+from resources.client import Client
 
 
 app = Flask(__name__)
@@ -31,30 +31,22 @@ def needsEndpoint():
 def index(endpoint):
     """Adds a deque to the shared dictionary and performs a 
     transfer via http back to client"""
-    addQueueToDict(endpoint)
-    #Transfer
-    print threading.enumerate()
+    C = Client()
+    addDequeToDict(endpoint, C)
     def generate():
+        """Infinite loop listening for events in the deques"""
         while True:
             try:
-                #for client in clientThreads():
-                #print 'I want to send an event to ' + str(client)
-                yield D[endpoint][0].popleft()
-                #D[endpoint] = rotate(D[endpoint])
+                yield C.deque.popleft()
             except:
                 pass
     return Response(generate(), mimetype='application/json')
 
 
-def clientThreads():
-    """Returns a list of client threads running"""
-    return [thread for thread in threading.enumerate() if thread.name[0:6] == 'Thread']
-
-
-def addQueueToDict(endpoint):
-    """Initialize an empty queue for a client in the shared dictionary"""
+def addDequeToDict(endpoint, C):
+    """Initialize an empty deque for a client in the shared dictionary"""
     if endpoint in endpoints:
-        D[endpoint].append(deque())
+        D[endpoint].append(C.deque)
         return 'Added event queue to %s key.\n' % endpoint
     else:
         return 'Invalid endpoint!\n'
@@ -66,11 +58,6 @@ def readYaml():
     listsOfEndpoints = [config[service] for service in config]
     endpoints = list(itertools.chain.from_iterable(listsOfEndpoints))
     return endpoints
-
-
-def rotate(l):
-    """Rotates a list by 1"""
-    return l[1:] + l[:1]
 
 
 def initializeDict(endpoints):
@@ -93,4 +80,3 @@ if __name__ == "__main__":
     #Terminate app
     print('\n')
     os._exit(0)
-        

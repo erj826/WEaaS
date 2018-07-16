@@ -76,7 +76,7 @@ if __name__ == "__main__":
     worker = listener.createListener(D)
     startListener = threading.Thread(target=worker.run, name="Listener").start()
     app.run(threaded=True)
-    
+
     #Terminate app
     print('\n')
     os._exit(0)

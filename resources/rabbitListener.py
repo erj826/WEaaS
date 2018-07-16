@@ -25,20 +25,10 @@ class Worker(ConsumerMixin):
             deque.append('{0}'.format(body))
         message.ack()
 
-    #Additional Error Checking:
-    # 
-    #    def on_connection_error(*args):
-    #        print('ERROR: {}'.format(args))
-    # 
-    #    def on_consume_ready(self, connection, channel, consumers):
-    #        print("On consume ready: {}, {}, {}".format(connection, channel, consumers))
-    # 
-    #    def on_decode_error(self, message, exc):
-    #        print("On decode error: {}, {}".format(message, exc))
- 
 
 def createListener(D):  
     exchange = Exchange('neutron', type='topic', durable=False, auto_delete=False)
+    #exchange = Exchange('all', type='fanout', durable=False, auto_delete=False)
     queues = [Queue('notifications.info', exchange, routing_key='notifications.info', durable=False, auto_delete=False, exclusive=False)]
 
     with Connection(rabbit_url, heartbeat=4) as conn:

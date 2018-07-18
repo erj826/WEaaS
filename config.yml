@@ -14,5 +14,8 @@ octavia:
   - listener
   - pool
   - member
+
+nova:
+  - compute
 #---
 

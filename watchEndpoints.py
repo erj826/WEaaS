@@ -2,9 +2,7 @@
 #erjacobs@redhat.com
 #29 June 2018
 #
-#
-#Flask application for the watch endpoints service
-#
+#Watch endpoints as a service (WEaaS)
 #
 
 

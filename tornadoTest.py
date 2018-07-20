@@ -8,6 +8,9 @@
 
 import tornado.ioloop
 import tornado.web
+import tornado.httpserver
+import tornado.gen
+import tornado.httpclient
 import itertools
 import resources.rabbitListener as listener
 import threading
@@ -18,6 +21,9 @@ from resources.client import Client
 pathToYamlConfig = 'config.yml'
 
 
+##########################################################################
+
+
 class MainHandler(tornado.web.RequestHandler):
     """When no endpoint is specified"""
     def get(self):
@@ -25,17 +31,29 @@ class MainHandler(tornado.web.RequestHandler):
 
         
 class ClientHandler(tornado.web.RequestHandler):
-    """Adds a deque to the shared dictionary and performs a 
-    transfer via http back to client"""
+    """Class that handles client connections"""
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
     def prepare(self):
+        """Initializes class variables and adds deque to D"""
         self.C = Client()
+        self.endpoint = self.path_args[0]
+        addDequeToDict(self.endpoint, self.C)
+    
 
-    def get(self, endpoint):
-        self.write(endpoint)
+    def get(self, *path_args, **path_kwargs):
+        """Implement chunked transfer here
+        https://stackoverflow.com/questions/20018684/tornado-streaming-http-response-as-asynchttpclient-receives-chunks
+        """
+        self.write("http chunked transfer\n")
 
 
+    def on_finish(self):
+        """Remove deque from D"""
+        D[self.endpoint].remove(self.C.deque)
 
-###Helpers###
+
+##########################################################################
 
 
 def addDequeToDict(endpoint, C):
@@ -61,6 +79,9 @@ def initializeDict(endpoints):
         D[endpoint] = []
 
 
+##########################################################################
+
+
 if __name__ == "__main__":
     #Initialize shared dictionary D with endpoints
     endpoints = readYaml()
@@ -77,10 +98,12 @@ if __name__ == "__main__":
     application = tornado.web.Application()
     application.add_handlers(r'(localhost|127\.0\.0\.1)',
     [
-        (r'/', MainHandler),
-        (r'/(\w+)', ClientHandler)
+        tornado.web.URLSpec(r'/', MainHandler),
+        tornado.web.URLSpec(r'/(\w+)', ClientHandler)
     ])
-    application.listen(8888)
+
+    httpServer = tornado.httpserver.HTTPServer(application)
+    httpServer.listen(8888)
     
     #Run app
     try: 
@@ -89,3 +112,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print('\n')
         tornado.ioloop.IOLoop.current().stop()
+
+
+##########################################################################

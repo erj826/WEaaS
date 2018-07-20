@@ -1,6 +1,6 @@
 #Eric Jacobson
 #erjacobs@redhat.com
-#29 June 2018
+#20 July 2018
 #
 #Watch endpoints as a service (WEaaS)
 #
@@ -10,7 +10,6 @@ import tornado.ioloop
 import tornado.web
 import itertools
 import resources.rabbitListener as listener
-import os
 import threading
 from yaml import load
 from resources.client import Client
@@ -28,26 +27,17 @@ class MainHandler(tornado.web.RequestHandler):
 class ClientHandler(tornado.web.RequestHandler):
     """Adds a deque to the shared dictionary and performs a 
     transfer via http back to client"""
-    def initialize(self, endpoint):
+    def prepare(self):
         self.C = Client()
-        self.endpoint = endpoint
-        addDequeToDict(self.endpoint, self.C)
-        self.write(self.endpoint)
-    
-    #def get(self, endpoint):
-    #    return endpoint
-        #self.write(endpoint)
+
+    def get(self, endpoint):
+        self.write(endpoint)
 
 
-def makeApp():
-    """Initialize application"""
-    return tornado.web.Application([
-        (r'/', MainHandler),
-        (r'/(\w+)', ClientHandler)
-    ])
+
+###Helpers###
 
 
-#Helpers
 def addDequeToDict(endpoint, C):
     """Initialize an empty deque for a client in the shared dictionary"""
     if endpoint in endpoints:
@@ -79,9 +69,22 @@ if __name__ == "__main__":
 
     #Create and start up listener thread
     worker = listener.createListener(D)
-    startListener = threading.Thread(target=worker.run, name="Listener").start()
+    Listener = threading.Thread(target=worker.run, name="Listener")
+    Listener.daemon = True
+    Listener.start()
   
     #Run app
-    application = makeApp()
+    application = tornado.web.Application()
+    application.add_handlers(r'(localhost|127\.0\.0\.1)',
+    [
+        (r'/', MainHandler),
+        (r'/(\w+)', ClientHandler)
+    ])
     application.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
+    
+    try: 
+        tornado.ioloop.IOLoop.current().start()
+
+    except KeyboardInterrupt:
+        print('\n')
+        tornado.ioloop.IOLoop.current().stop()

@@ -73,7 +73,7 @@ if __name__ == "__main__":
     Listener.daemon = True
     Listener.start()
   
-    #Run app
+    #Initialize app
     application = tornado.web.Application()
     application.add_handlers(r'(localhost|127\.0\.0\.1)',
     [
@@ -82,6 +82,7 @@ if __name__ == "__main__":
     ])
     application.listen(8888)
     
+    #Run app
     try: 
         tornado.ioloop.IOLoop.current().start()
 

@@ -36,7 +36,7 @@ def index(endpoint):
         while True:
             try:
                 yield C.deque.popleft() + "\n\n"
-            except:
+            except IndexError:
                 pass
     return Response(generate(), mimetype='application/json')
 

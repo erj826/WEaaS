@@ -5,29 +5,30 @@ WEaaS is used as an alternative to OpenStack's APIs. By communicating directly w
 
 ### Supported Endpoints
 * Neutron:
-  * Port
+  * port
 
 More info: https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/port.html
 
 * Octavia:
-  * Loadbalancer
-  * Listener
-  * Pool
-  * Member
+  * loadbalancer
+  * listener
+  * pool
+  * member
 
 More info: https://docs.openstack.org/python-octaviaclient/latest/cli/index.html#loadbalancer
+
+* Nova:
+  * compute
 
 
 ### Usage
 
-##### To start up the app, run:
+##### To start up the app server, run:
 `python watchEndpoints.py`
 
 ##### Client usage:
-Curl the server on which the app is running. 
-End the url with the desired endpoint.
-i.e.
+Run the user.py script. Pass it an endpoint as an argument:
 
-`curl http://127.0.0.1:5000/port`
+`python user.py port`
 
-The app runs until terminated by a client.
+Client and server should be terminated by a keyboard interrupt.

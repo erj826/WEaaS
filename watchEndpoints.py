@@ -19,6 +19,9 @@ app = Flask(__name__)
 pathToYamlConfig = 'config.yml'
 
 
+############################################################################
+
+
 @app.route('/')
 def needsEndpoint():
     """No endpoint given"""
@@ -29,16 +32,34 @@ def needsEndpoint():
 def index(endpoint):
     """Adds a deque to the shared dictionary and performs a 
     transfer via http back to client"""
+    global Connected 
+    Connected = True
+
     C = Client()
-    addDequeToDict(endpoint, C)
+
     def generate():
         """Infinite loop listening for events in the deques"""
-        while True:
+        addDequeToDict(endpoint, C)
+        while Connected:
             try:
                 yield C.deque.popleft() + "\n\n"
             except IndexError:
                 pass
+
+        #Executes with close
+        D[endpoint].remove(C.deque)
+
     return Response(generate(), mimetype='application/json')
+
+
+@app.route('/<endpoint>/close')
+def close(endpoint):
+    """Close connection"""
+    Connected = False
+    return "\n"
+
+
+############################################################################
 
 
 def addDequeToDict(endpoint, C):
@@ -64,6 +85,9 @@ def initializeDict(endpoints):
         D[endpoint] = []
 
 
+############################################################################
+
+
 if __name__ == "__main__":
     #Initialize shared dictionary D with endpoints
     endpoints = readYaml()
@@ -78,3 +102,6 @@ if __name__ == "__main__":
     #Terminate app
     print('\n')
     os._exit(0)
+
+
+############################################################################

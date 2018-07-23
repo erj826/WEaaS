@@ -11,6 +11,7 @@ import tornado.web
 import tornado.httpserver
 import tornado.gen
 import tornado.httpclient
+import tornado.netutil
 import itertools
 import resources.rabbitListener as listener
 import threading
@@ -32,20 +33,28 @@ class MainHandler(tornado.web.RequestHandler):
         
 class ClientHandler(tornado.web.RequestHandler):
     """Class that handles client connections"""
-    @tornado.web.asynchronous
-    @tornado.gen.coroutine
+    #def __init__(self, *path_args, **path_kwargs):
+    #    self.stream.set_close_callback(self._onclose)
+
     def prepare(self):
         """Initializes class variables and adds deque to D"""
         self.C = Client()
         self.endpoint = self.path_args[0]
         addDequeToDict(self.endpoint, self.C)
-    
 
+    @tornado.gen.coroutine
+    def transfer(self):
+        while self.C.connected:
+            try:
+                yield self.write(self.C.deque.popleft())
+            except IndexError:
+                pass
+
+    @tornado.gen.coroutine
     def get(self, *path_args, **path_kwargs):
-        """Implement chunked transfer here
-        https://stackoverflow.com/questions/20018684/tornado-streaming-http-response-as-asynchttpclient-receives-chunks
-        """
-        self.write("http chunked transfer\n")
+        """"""
+        print "Connected to client at %s" % self.request.remote_ip
+        raise tornado.gen.Return(self.transfer())
 
 
     def on_finish(self):
@@ -102,8 +111,10 @@ if __name__ == "__main__":
         tornado.web.URLSpec(r'/(\w+)', ClientHandler)
     ])
 
-    httpServer = tornado.httpserver.HTTPServer(application)
-    httpServer.listen(8888)
+    port = 8888
+    server = tornado.httpserver.HTTPServer(application)
+    server.listen(port)
+    print "Running on port: %s" % port
     
     #Run app
     try: 

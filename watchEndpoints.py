@@ -32,21 +32,31 @@ def needsEndpoint():
 def index(endpoint):
     """Adds a deque to the shared dictionary and performs a 
     transfer via http back to client"""
+    if endpoint not in endpoints:
+        return 'Invalid endpoint!'
+    
     global Connected 
     Connected = True
-
+    
     C = Client()
-
+  
     def generate():
         """Infinite loop listening for events in the deques"""
-        addDequeToDict(endpoint, C)
-        while Connected:
-            try:
-                yield C.deque.popleft() + "\n\n"
-            except IndexError:
-                pass
+        try:
+            addDequeToDict(endpoint, C)
+        
+            while Connected:
+                try:
+                    yield C.deque.popleft() + "\n\n"
+                except IndexError:
+                    pass
 
-        D[endpoint].remove(C.deque)
+            D[endpoint].remove(C.deque)
+
+        except e:
+            pass
+            
+
 
     return Response(generate(), mimetype='application/json')
 
@@ -99,7 +109,12 @@ if __name__ == "__main__":
     app.run(threaded=True)
 
     #Terminate app
-    print('\n')
+    print('\nShutting down...')
+    numConn = len(threading.enumerate()) - 2
+    if numConn > 0:
+        print('\nClients still connected: %s' % numConn)
+        print('Watching: %s' % ', '.join(e for e in [ep for ep in D if len(D[ep]) > 0]))
+
     os._exit(0)
 
 

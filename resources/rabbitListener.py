@@ -10,7 +10,10 @@ from kombu.mixins import ConsumerMixin
  
 rabbit_url = "amqp://stackrabbit:pass@192.168.2.4:5672/"
 
+
+##########################################################################
  
+
 class Worker(ConsumerMixin):
     def __init__(self, connection, queues, D):
         self.connection = connection
@@ -36,6 +39,9 @@ class Worker(ConsumerMixin):
         message.ack()
 
 
+############################################################################
+
+
 def createListener(D):  
     exchange = Exchange('neutron', type='topic', durable=False, auto_delete=False)
     queues = [Queue('notifications.info', exchange, routing_key='notifications.info', durable=False, auto_delete=False, exclusive=False)]
@@ -44,3 +50,6 @@ def createListener(D):
         worker = Worker(conn, queues, D)
         return worker
     return None
+
+
+###########################################################################

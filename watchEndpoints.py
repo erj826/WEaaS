@@ -46,7 +46,6 @@ def index(endpoint):
             except IndexError:
                 pass
 
-        #Executes with close
         D[endpoint].remove(C.deque)
 
     return Response(generate(), mimetype='application/json')

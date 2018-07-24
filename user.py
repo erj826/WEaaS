@@ -19,6 +19,9 @@ parser.add_argument('endpoint', type=str, help='endpoint to watch')
 args = parser.parse_args()
 
 
+#######################################################################
+
+
 def main():
     #curl app server
     query = appURL + args.endpoint
@@ -33,8 +36,11 @@ def main():
     os._exit(0)
 
 
+#######################################################################
+
+
 if __name__ == "__main__":
     main()
 
 
-
+#######################################################################

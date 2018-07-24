@@ -34,29 +34,21 @@ def index(endpoint):
     transfer via http back to client"""
     if endpoint not in endpoints:
         return 'Invalid endpoint!'
-    
-    global Connected 
+
+    global Connected
     Connected = True
     
     C = Client()
   
     def generate():
         """Infinite loop listening for events in the deques"""
-        try:
-            addDequeToDict(endpoint, C)
+        addDequeToDict(endpoint, C)
         
-            while Connected:
-                try:
-                    yield C.deque.popleft() + "\n\n"
-                except IndexError:
-                    pass
+        while Connected:
+            if len(C.deque) > 0:
+                yield C.deque.popleft() + "\n\n"
 
-            D[endpoint].remove(C.deque)
-
-        except e:
-            pass
-            
-
+        D[endpoint].remove(C.deque)
 
     return Response(generate(), mimetype='application/json')
 
@@ -65,7 +57,7 @@ def index(endpoint):
 def close(endpoint):
     """Close connection"""
     Connected = False
-    return "\n"
+    return '\n'
 
 
 ############################################################################

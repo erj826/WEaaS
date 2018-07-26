@@ -28,8 +28,8 @@ def needsEndpoint():
     return 'No endpoint specified in the URL!\n'
 
 
-@app.route('/<endpoint>')
-def index(endpoint):
+@app.route('/<endpoint>/<projectID>')
+def index(endpoint, projectID):
     """Adds a deque to the shared dictionary and performs a 
     transfer via http back to client"""
     if endpoint not in endpoints:
@@ -39,6 +39,7 @@ def index(endpoint):
     Connected = True
     
     C = Client()
+    C.projectID = projectID
   
     def generate():
         """Infinite loop listening for events in the deques"""
@@ -46,7 +47,9 @@ def index(endpoint):
         
         while Connected:
             if len(C.deque) > 0:
-                yield C.deque.popleft() + "\n\n"
+                event = C.deque.popleft()
+                if event['payload']['port']['project_id'] == C.projectID:
+                    yield str(event) + "\n\n"
 
         D[endpoint].remove(C.deque)
 
@@ -104,7 +107,7 @@ if __name__ == "__main__":
     print('\nShutting down...')
     numConn = len(threading.enumerate()) - 2
     if numConn > 0:
-        print('\nClients still connected: %s' % numConn)
+        print('\nClients connected at shutdown: %s' % numConn)
         print('Watching: %s' % ', '.join(e for e in [ep for ep in D if len(D[ep]) > 0]))
 
     os._exit(0)

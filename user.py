@@ -7,7 +7,9 @@
 
 import os
 import argparse
-
+import subprocess
+import shlex
+import yaml
 
 #Server is running on:
 appURL = 'http://127.0.0.1:5000/'
@@ -23,16 +25,27 @@ args = parser.parse_args()
 
 
 def main():
-    #curl app server
-    query = appURL + args.endpoint
-    os.system('curl %s' % query)
+    #Get token
+    try:
+        token = subprocess.check_output(shlex.split('openstack token issue -f yaml'))
+        projectID = yaml.load(token)['project_id']
+    except Exception as e:
+        print "Error: %s" % e
+        return
 
-    #close connection
-    print '\n\nClosing connection...'
-    close = query + '/close'
-    os.system('curl %s' % close)
+    try:
+        #curl app server
+        query = appURL + args.endpoint + '/' + projectID
+        subprocess.call(shlex.split('curl %s' % query))
 
-    #Exit successfully
+    except KeyboardInterrupt as e:
+        #close connection
+        print '\n\nClosing connection...'
+        close = query + '/close'
+        FNULL = open(os.devnull, 'w')
+        subprocess.call(shlex.split('curl %s' % close), stdout=FNULL, stderr = FNULL)
+
+    #Exit
     os._exit(0)
 
 

@@ -6,7 +6,6 @@
  
 from kombu import Connection, Exchange, Queue
 from kombu.mixins import ConsumerMixin
-
  
 rabbit_url = "amqp://stackrabbit:pass@192.168.2.4:5672/"
 
@@ -30,7 +29,7 @@ class Worker(ConsumerMixin):
         try:
             endpoint = body['event_type'].split('.')[0]
             for deque in self.D[endpoint]:
-                deque.append('{0}'.format(body))
+                deque.append(body)
         except:
             if self.debug:
                 print 'Unable to place message: ' + '{0}'.format(body)

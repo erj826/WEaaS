@@ -9,6 +9,7 @@
 import itertools
 import resources.rabbitListener as listener
 import os
+import sys
 import threading
 from yaml import load
 from flask import Flask, Response
@@ -21,6 +22,7 @@ pathToYamlConfig = 'config.yml'
 
 ############################################################################
 
+D = {}
 
 @app.route('/')
 def needsEndpoint():
@@ -30,21 +32,21 @@ def needsEndpoint():
 
 @app.route('/<endpoint>/<projectID>')
 def index(endpoint, projectID):
-    """Adds a deque to the shared dictionary and performs a 
+    """Adds a deque to the shared dictionary and performs a
     transfer via http back to client"""
     if endpoint not in endpoints:
         return 'Invalid endpoint!'
 
     global Connected
     Connected = True
-    
+
     C = Client()
     C.projectID = projectID
-  
+
     def generate():
         """Infinite loop listening for events in the deques"""
         addDequeToDict(endpoint, C)
-        
+
         while Connected:
             if len(C.deque) > 0:
                 event = C.deque.popleft()
@@ -92,22 +94,7 @@ def initializeDict(endpoints):
 ############################################################################
 
 
-#if __name__ == "__main__":
-
-#Initialize shared dictionary D with endpoints
-endpoints = readYaml()
-D = {}
-initializeDict(endpoints)
-
-#Create and start up listener thread
-worker = listener.createListener(D)
-startListener = threading.Thread(target=worker.run, name="Listener").start()
-
-#app.run(threaded=True)
-
-
 #Terminate app
-@app.teardown_request
 def shutdown(exception=None):
     print('\nShutting down...')
     numConn = len(threading.enumerate()) - 2
@@ -115,7 +102,18 @@ def shutdown(exception=None):
         print('\nClients connected at shutdown: %s' % numConn)
         print('Watching: %s' % ', '.join(e for e in [ep for ep in D if len(D[ep]) > 0]))
 
-    os._exit(0)
 
 
 ############################################################################
+
+def configure_listener():
+    #Initialize shared dictionary D with endpoints
+    global endpoints
+    endpoints = readYaml()
+    initializeDict(endpoints)
+
+    #Create and start up listener thread
+    worker = listener.createListener(D)
+    startListener = threading.Thread(target=worker.run, name="Listener").start()
+
+configure_listener()

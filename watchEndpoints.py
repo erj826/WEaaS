@@ -92,18 +92,23 @@ def initializeDict(endpoints):
 ############################################################################
 
 
-if __name__ == "__main__":
-    #Initialize shared dictionary D with endpoints
-    endpoints = readYaml()
-    D = {}
-    initializeDict(endpoints)
+#if __name__ == "__main__":
 
-    #Create and start up listener thread
-    worker = listener.createListener(D)
-    startListener = threading.Thread(target=worker.run, name="Listener").start()
-    app.run(threaded=True)
+#Initialize shared dictionary D with endpoints
+endpoints = readYaml()
+D = {}
+initializeDict(endpoints)
 
-    #Terminate app
+#Create and start up listener thread
+worker = listener.createListener(D)
+startListener = threading.Thread(target=worker.run, name="Listener").start()
+
+#app.run(threaded=True)
+
+
+#Terminate app
+@app.teardown_request
+def shutdown(exception=None):
     print('\nShutting down...')
     numConn = len(threading.enumerate()) - 2
     if numConn > 0:

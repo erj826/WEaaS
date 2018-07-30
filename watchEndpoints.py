@@ -32,10 +32,14 @@ def needsEndpoint():
     return 'No endpoint specified in the URL!\n'
 
 
+@app.route('/<endpoint>', defaults={'projectID': 'emptyToken'})
 @app.route('/<endpoint>/<projectID>')
 def index(endpoint, projectID):
     """Adds a deque to the shared dictionary and performs a
     transfer via http back to client"""
+    if (projectID == 'emptyToken') and (AUTH_REQUIRED):
+        return "Can't authenticate token!"
+
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
 

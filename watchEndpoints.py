@@ -96,18 +96,6 @@ def initializeDict(endpoints):
 ############################################################################
 
 
-##Terminate app
-#def shutdown(exception=None):
-#    print('\nShutting down...')
-#    numConn = len(threading.enumerate()) - 2
-#    if numConn > 0:
-#        print('\nClients connected at shutdown: %s' % numConn)
-#        print('Watching: %s' % ', '.join(e for e in [ep for ep in D if len(D[ep]) > 0]))
-
-
-
-############################################################################
-
 def configure_listener():
     #Initialize shared dictionary D with endpoints
     endpoints = readYaml()

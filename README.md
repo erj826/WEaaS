@@ -7,7 +7,7 @@ WEaaS is used as an alternative to OpenStack's APIs. By communicating directly w
 * Neutron:
   * port
 
-More info: https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/port.html
+More info [here](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/port.html).
 
 * Octavia:
   * loadbalancer
@@ -15,7 +15,7 @@ More info: https://docs.openstack.org/python-openstackclient/pike/cli/command-ob
   * pool
   * member
 
-More info: https://docs.openstack.org/python-octaviaclient/latest/cli/index.html#loadbalancer
+More info [here](https://docs.openstack.org/python-octaviaclient/latest/cli/index.html#loadbalancer).
 
 * Nova:
   * compute
@@ -25,11 +25,15 @@ More info: https://docs.openstack.org/python-octaviaclient/latest/cli/index.html
 
 ### Admin: 
 #### To start up the gunicorn app server, run:
-`gunicorn -b 127.0.0.1:5000 watchEndpoints:app --threads 24` 
+`gunicorn -b 127.0.0.1:5000 --threads 24 watchEndpoints:app`
 
-_Note: each client requires 2 threads_
+More info on gunicorn args [here](http://docs.gunicorn.org/en/stable/settings.html).
 
-_Note: authentication can be enabled or disabled from the watchEndpoints.py script_
+_Notes:_
+
+  _each client requires 2 threads_
+  
+  _authentication can be enabled or disabled from the watchEndpoints.py script__
 
 ### Client:
 Run the user.py script. Pass it an endpoint as an argument:

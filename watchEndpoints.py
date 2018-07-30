@@ -37,18 +37,26 @@ def needsEndpoint():
 def index(endpoint, projectID):
     """Adds a deque to the shared dictionary and performs a
     transfer via http back to client"""
-    if (projectID == 'emptyToken') and (AUTH_REQUIRED):
+
+    #verify that client curled with correct args
+    if (projectID == 'emptyToken') and (endpoint != 'close') and (AUTH_REQUIRED):
         return "Can't authenticate token!"
+
+    if endpoint == 'close':
+        return close()
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
 
+    #client is connected, boolean will be set to False when client disconnects
     global Connected
     Connected = True
 
     C = Client()
     C.projectID = projectID
 
+
+    #generate a chunked http response for the client
     def generate():
         """Infinite loop listening for events in the deques"""
         addDequeToDict(endpoint, C)
@@ -59,19 +67,19 @@ def index(endpoint, projectID):
                 if (event['payload']['port']['project_id'] == C.projectID) or (not AUTH_REQUIRED):
                     yield str(event) + "\n\n"
 
+        #remove the client's deque from the shared dictionary
         D[endpoint].remove(C.deque)
 
     return Response(generate(), mimetype='application/json')
 
 
-@app.route('/<endpoint>/<projectID>/close')
-def close(endpoint, projectID):
+############################################################################
+
+
+def close():
     """Close connection"""
     Connected = False
     return '\n'
-
-
-############################################################################
 
 
 def addDequeToDict(endpoint, C):

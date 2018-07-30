@@ -31,7 +31,8 @@ def main():
         projectID = yaml.load(token)['project_id']
     except Exception as e:
         print "Error: %s" % e
-        return
+        print "Curling without token..."
+        projectID = 'emptyToken'
 
     try:
         #curl app server

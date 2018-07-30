@@ -18,11 +18,13 @@ from resources.client import Client
 
 app = Flask(__name__)
 pathToYamlConfig = 'config.yml'
+AUTH_REQUIRED = True 
+D = {}
+
 
 
 ############################################################################
 
-D = {}
 
 @app.route('/')
 def needsEndpoint():
@@ -34,7 +36,7 @@ def needsEndpoint():
 def index(endpoint, projectID):
     """Adds a deque to the shared dictionary and performs a
     transfer via http back to client"""
-    if endpoint not in endpoints:
+    if endpoint not in D.keys():
         return 'Invalid endpoint!'
 
     global Connected
@@ -50,7 +52,7 @@ def index(endpoint, projectID):
         while Connected:
             if len(C.deque) > 0:
                 event = C.deque.popleft()
-                if event['payload']['port']['project_id'] == C.projectID:
+                if (event['payload']['port']['project_id'] == C.projectID) or (not AUTH_REQUIRED):
                     yield str(event) + "\n\n"
 
         D[endpoint].remove(C.deque)
@@ -58,8 +60,8 @@ def index(endpoint, projectID):
     return Response(generate(), mimetype='application/json')
 
 
-@app.route('/<endpoint>/close')
-def close(endpoint):
+@app.route('/<endpoint>/<projectID>/close')
+def close(endpoint, projectID):
     """Close connection"""
     Connected = False
     return '\n'
@@ -70,7 +72,7 @@ def close(endpoint):
 
 def addDequeToDict(endpoint, C):
     """Initialize an empty deque for a client in the shared dictionary"""
-    if endpoint in endpoints:
+    if endpoint in D.keys():
         D[endpoint].append(C.deque)
         return 'Added event queue to %s key.\n' % endpoint
     else:
@@ -94,13 +96,13 @@ def initializeDict(endpoints):
 ############################################################################
 
 
-#Terminate app
-def shutdown(exception=None):
-    print('\nShutting down...')
-    numConn = len(threading.enumerate()) - 2
-    if numConn > 0:
-        print('\nClients connected at shutdown: %s' % numConn)
-        print('Watching: %s' % ', '.join(e for e in [ep for ep in D if len(D[ep]) > 0]))
+##Terminate app
+#def shutdown(exception=None):
+#    print('\nShutting down...')
+#    numConn = len(threading.enumerate()) - 2
+#    if numConn > 0:
+#        print('\nClients connected at shutdown: %s' % numConn)
+#        print('Watching: %s' % ', '.join(e for e in [ep for ep in D if len(D[ep]) > 0]))
 
 
 
@@ -108,7 +110,6 @@ def shutdown(exception=None):
 
 def configure_listener():
     #Initialize shared dictionary D with endpoints
-    global endpoints
     endpoints = readYaml()
     initializeDict(endpoints)
 

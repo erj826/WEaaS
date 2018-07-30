@@ -33,7 +33,7 @@ _Notes:_
 
 &nbsp;&nbsp;&nbsp;&nbsp;_Each client requires 2 threads_
   
-&nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script__
+&nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script_
 
 ### Client:
 Run the user.py script. Pass it an endpoint as an argument:

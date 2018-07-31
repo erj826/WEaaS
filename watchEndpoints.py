@@ -39,11 +39,8 @@ def index(endpoint, projectID):
     transfer via http back to client"""
 
     #verify that client curled with correct args
-    if (projectID == 'emptyToken') and (endpoint != 'close') and (AUTH_REQUIRED):
+    if (projectID == 'emptyToken') and (AUTH_REQUIRED):
         return "Can't authenticate token!"
-
-    if endpoint == 'close':
-        return close()
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
@@ -66,20 +63,21 @@ def index(endpoint, projectID):
                 event = C.deque.popleft()
                 if (event['payload']['port']['project_id'] == C.projectID) or (not AUTH_REQUIRED):
                     yield str(event) + "\n\n"
-
+        
         #remove the client's deque from the shared dictionary
         D[endpoint].remove(C.deque)
 
     return Response(generate(), mimetype='application/json')
 
 
-############################################################################
-
-
-def close():
+@app.route('/<endpoint>/<projectID>/close') 
+def close(endpoint, projectID):
     """Close connection"""
     Connected = False
     return '\n'
+
+
+############################################################################
 
 
 def addDequeToDict(endpoint, C):

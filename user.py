@@ -34,17 +34,12 @@ def main():
         print "Curling without token..."
         projectID = 'emptyToken'
 
+    #Curl app server
     try:
-        #curl app server
         query = appURL + args.endpoint + '/' + projectID
         subprocess.call(shlex.split('curl %s' % query))
-
     except KeyboardInterrupt as e:
-        #close connection
-        print '\n\nClosing connection...'
-        close = query + '/close'
-        FNULL = open(os.devnull, 'w')
-        subprocess.call(shlex.split('curl %s' % close), stdout=FNULL, stderr = FNULL)
+        print '\nClosing connection...\n'
 
     #Exit
     os._exit(0)

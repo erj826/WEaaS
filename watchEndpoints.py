@@ -11,6 +11,7 @@ import resources.rabbitListener as listener
 import os
 import sys
 import threading
+import logging
 from yaml import load
 from flask import Flask, Response
 from resources.client import Client
@@ -22,6 +23,11 @@ AUTH_REQUIRED = True
 D = {}
 
 
+#Debug log (prints to stdout)
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.DEBUG)
+
+#Note: use app.logger.debug("hello world") to print messages to stdout
 
 ############################################################################
 
@@ -35,46 +41,41 @@ def needsEndpoint():
 @app.route('/<endpoint>', defaults={'projectID': 'emptyToken'})
 @app.route('/<endpoint>/<projectID>')
 def index(endpoint, projectID):
-    """Adds a deque to the shared dictionary and performs a
+    """Adds a deque to the shared dictionary, D, and performs a
     transfer via http back to client"""
 
-    #verify that client curled with correct args
+    #Verify that client curled with correct args
     if (projectID == 'emptyToken') and (AUTH_REQUIRED):
-        return "Can't authenticate token!"
+        return 'Unable to authenticate token!'
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
 
-    #client is connected, boolean will be set to False when client disconnects
-    global Connected
-    Connected = True
-
+    #Initialize client object
     C = Client()
     C.projectID = projectID
 
-
-    #generate a chunked http response for the client
+    #Generate a chunked http response for the client
     def generate():
-        """Infinite loop listening for events in the deques"""
+        """Generator with an infinite loop listening for events in D"""
         addDequeToDict(endpoint, C)
 
-        while Connected:
+        while True:
+
             if len(C.deque) > 0:
                 event = C.deque.popleft()
+
                 if (event['payload']['port']['project_id'] == C.projectID) or (not AUTH_REQUIRED):
-                    yield str(event) + "\n\n"
-        
-        #remove the client's deque from the shared dictionary
+                    try:
+                        yield str(event) + '\n\n'
+                    except:
+                        app.logger.debug('Detected client disconnect.')
+                        break
+
+        #Remove the client's deque from the shared dictionary
         D[endpoint].remove(C.deque)
 
     return Response(generate(), mimetype='application/json')
-
-
-@app.route('/<endpoint>/<projectID>/close') 
-def close(endpoint, projectID):
-    """Close connection"""
-    Connected = False
-    return '\n'
 
 
 ############################################################################
@@ -103,16 +104,17 @@ def initializeDict(endpoints):
         D[endpoint] = []
 
 
-############################################################################
-
-
-def configure_listener():
+def configureListener():
+    """Configure and start up listener"""
     #Initialize shared dictionary D with endpoints
     endpoints = readYaml()
     initializeDict(endpoints)
 
     #Create and start up listener thread
     worker = listener.createListener(D)
-    startListener = threading.Thread(target=worker.run, name="Listener").start()
+    startListener = threading.Thread(target=worker.run, name='Listener').start()
 
-configure_listener()
+configureListener()
+
+
+############################################################################

@@ -1,3 +1,5 @@
+#Eric Jacobson
+#erjacobs@redhat.com
 # 
 # Adapted from script by celebdor
 # Found at: https://gist.github.com/celebdor/06cf4bf06637a72358b982832c366429

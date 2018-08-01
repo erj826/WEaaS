@@ -12,7 +12,7 @@ import shlex
 import yaml
 
 #Server is running on:
-appURL = 'http://127.0.0.1:5000/'
+appURL = 'http://127.0.0.1:5000'
 
 
 #Parse command line args
@@ -36,7 +36,7 @@ def main():
 
     #Curl app server
     try:
-        query = appURL + args.endpoint + '/' + projectID
+        query = appURL + '/' + args.endpoint + '/' + projectID
         subprocess.call(shlex.split('curl %s' % query))
     except KeyboardInterrupt as e:
         print '\nClosing connection...\n'

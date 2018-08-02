@@ -25,14 +25,12 @@ More info [here](https://docs.openstack.org/python-octaviaclient/latest/cli/inde
 
 ### Admin: 
 #### To start up the gunicorn app server, run:
-`gunicorn -b 127.0.0.1:5000 --threads 24 watchEndpoints:app`
+`gunicorn -b 127.0.0.1:5000 --threads 8 watchEndpoints:app`
 
 More info on gunicorn args [here](http://docs.gunicorn.org/en/stable/settings.html).
 
 _Notes:_
 
-&nbsp;&nbsp;&nbsp;&nbsp;_Each client requires 2 threads_
-  
 &nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script_
 
 ### Client:
@@ -40,4 +38,5 @@ Run the user.py script. Pass it an endpoint as an argument:
 
 `python user.py port`
 
-Client and server should be terminated by a keyboard interrupt.
+
+_Note: Client and server should be terminated by a keyboard interrupt._

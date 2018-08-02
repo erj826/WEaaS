@@ -39,7 +39,7 @@ def main():
         query = appURL + '/' + args.endpoint + '/' + projectID
         subprocess.call(shlex.split('curl %s' % query))
     except KeyboardInterrupt as e:
-        print '\nClosing connection...\n'
+        print '\nClosing connection...'
 
     #Exit
     os._exit(0)

@@ -68,7 +68,7 @@ def index(endpoint, projectID):
                 if (event['payload']['port']['project_id'] == C.projectID) or (not AUTH_REQUIRED):
                     try:
                         yield str(event) + '\n\n'
-                    except:
+                    except GeneratorExit:
                         app.logger.debug('Detected client disconnect.')
                         break
 

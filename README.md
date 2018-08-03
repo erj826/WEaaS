@@ -2,7 +2,7 @@
 
 Watch Endpoints as a Service project for Red Hat. WEaaS is used in conjunction with OpenStack.
 
-WEaaS (a.k.a Stop Polling All the Things) is used as a faster alternative to monitor endpoints by avoiding the repeated usage of the OpenStack API. By communicating directly with RabbitMQ, OpenStack's messaging service, WEaaS is able to return endpoint information faster than repeated polling of the API can.
+WEaaS (a.k.a Stop Polling All the Things) is used as a faster alternative to monitor endpoints by avoiding the repeated usage of the OpenStack API. By communicating directly with RabbitMQ, OpenStack's messaging service, WEaaS is able to return endpoint information faster and more efficiently than repeated polling of the API.
 
 Intended client: Kuryr Controller
 

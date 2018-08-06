@@ -43,3 +43,10 @@ Run the user.py script. Pass it an endpoint as an argument:
 
 
 _Note: Client and server should be terminated by a keyboard interrupt._
+
+***
+
+## WEaaS Developer Guide
+
+### Project Architecture:
+<p align="center"><img src="https://github.com/erj826/WEaaS/blob/master/resources/Architecture.png" width="560" align="middle"/></p>

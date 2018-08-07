@@ -1,8 +1,9 @@
 # WEaaS &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://u.imageresize.org/v2/44defaa8-3bc5-475f-b210-9239ae35b4fc.png" width="150" />
 
-Watch Endpoints as a Service project for Red Hat. WEaaS is used in conjunction with OpenStack.
+Watch Endpoints as a Service project for Red Hat. WEaaS is intended for use in conjunction with Kuryr.
 
-WEaaS (a.k.a Stop Polling All the Things) is used as a faster alternative to monitor endpoints by avoiding the repeated usage of the OpenStack API. By communicating directly with RabbitMQ, OpenStack's messaging service, WEaaS is able to return endpoint information faster and more efficiently than repeated polling of the API.
+WEaaS (a.k.a stop polling all the things) is offered as a more efficient alternative to monitor endpoints by tapping directly into Neutron's messaging queue. Currently, the Kuryr Controller polls the OpenStack API to watch for networking events. 
+By communicating directly with RabbitMQ, OpenStack's messaging service, WEaaS is able to return endpoint information faster than polling of the API.
 
 Intended client: Kuryr Controller
 
@@ -32,17 +33,25 @@ More info [here](https://docs.openstack.org/python-octaviaclient/latest/cli/inde
 
 More info on gunicorn args [here](http://docs.gunicorn.org/en/stable/settings.html).
 
-_Notes:_
-
-&nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script_
-
 ### Client:
-Run the user.py script. Pass it an endpoint as an argument:
+For ease of testing purposes, 
+run the user.py script. Pass it an endpoint as an argument:
 
 `python user.py port`
 
+In production,
+curl the url:
 
-_Note: Client and server should be terminated by a keyboard interrupt._
+`curl http://127.0.0.1:5000/endpoint`
+
+or
+
+`curl http://127.0.0.1:5000/someTokenHere/endpoint`
+
+_Notes:_
+&nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script_
+&nbsp;&nbsp;&nbsp;&nbsp; _If authentication is disabled, passing a token is optional_
+&nbsp;&nbsp;&nbsp;&nbsp; _Client and server may be terminated by a keyboard interrupt._
 
 ***
 

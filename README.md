@@ -50,7 +50,9 @@ or
 
 _Notes:_
 &nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script_
+
 &nbsp;&nbsp;&nbsp;&nbsp; _If authentication is disabled, passing a token is optional_
+
 &nbsp;&nbsp;&nbsp;&nbsp; _Client and server may be terminated by a keyboard interrupt._
 
 ***

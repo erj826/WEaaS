@@ -54,7 +54,7 @@ _Notes:_
 
 &nbsp;&nbsp;&nbsp;&nbsp; _If authentication is disabled, passing a token is optional_
 
-&nbsp;&nbsp;&nbsp;&nbsp; _Client and server may be terminated by a keyboard interrupt._
+&nbsp;&nbsp;&nbsp;&nbsp; _Client and server may be terminated by a keyboard interrupt_
 
 ***
 
@@ -62,3 +62,5 @@ _Notes:_
 
 ### Project Architecture:
 <p align="center"><img src="https://github.com/erj826/WEaaS/blob/master/resources/Architecture.png" width="650" align="middle"/></p>
+
+***

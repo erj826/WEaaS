@@ -1,6 +1,6 @@
 # WEaaS &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://u.imageresize.org/v2/44defaa8-3bc5-475f-b210-9239ae35b4fc.png" width="150" />
 
-Watch Endpoints as a Service project for Red Hat. WEaaS is intended for use in conjunction with Kuryr.
+Watch Endpoints as a Service project for Red Hat. WEaaS is intended for use in conjunction with Kuryr and OpenStack.
 
 WEaaS (a.k.a stop polling all the things) is offered as a more efficient alternative to monitor endpoints by tapping directly into Neutron's messaging queue. Currently, the Kuryr Controller polls the OpenStack API to watch for networking events. 
 By communicating directly with RabbitMQ, OpenStack's messaging service, WEaaS is able to return endpoint information faster than polling of the API.

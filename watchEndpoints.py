@@ -19,7 +19,7 @@ from resources.client import Client
 
 app = Flask(__name__)
 pathToYamlConfig = 'config.yml'
-AUTH_REQUIRED = True 
+AUTH_REQUIRED = True
 D = {}
 
 
@@ -65,7 +65,7 @@ def index(endpoint, projectID):
             if len(C.deque) > 0:
                 event = C.deque.popleft()
 
-                if (event['payload']['port']['project_id'] == C.projectID) or (not AUTH_REQUIRED):
+                if (event['_context_project_id'] == C.projectID) or (not AUTH_REQUIRED):
                     try:
                         yield str(event) + '\n\n'
                     except GeneratorExit:

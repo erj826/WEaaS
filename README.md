@@ -61,6 +61,6 @@ _Notes:_
 ## WEaaS Developer Guide
 
 ### Project Architecture:
-<p align="center"><img src="https://github.com/erj826/WEaaS/blob/master/resources/Architecture.png" width="650" align="middle"/></p>
+<p align="center"><img src="https://github.com/erj826/WEaaS/blob/master/resources/Architecture.png" width="650"/></p>
 
 ***

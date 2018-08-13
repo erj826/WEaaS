@@ -9,13 +9,11 @@
 neutron:
   - port
 
-octavia:
+lbaasv2:
   - loadbalancer
   - listener
   - pool
   - member
 
-nova:
-  - compute
 #---
 

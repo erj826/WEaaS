@@ -13,16 +13,13 @@ Intended client: Kuryr Controller
 
 More info [here](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/port.html).
 
-* Octavia:
+* LBaaS v2:
   * loadbalancer
   * listener
   * pool
   * member
 
-More info [here](https://docs.openstack.org/python-octaviaclient/latest/cli/index.html#loadbalancer).
-
-* Nova:
-  * compute
+More info [here](https://docs.openstack.org/mitaka/networking-guide/config-lbaas.html).
 
 
 ## Usage

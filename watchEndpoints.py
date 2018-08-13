@@ -19,7 +19,7 @@ from resources.client import Client
 
 app = Flask(__name__)
 pathToYamlConfig = 'config.yml'
-AUTH_REQUIRED = True
+AUTH_REQUIRED = False
 D = {}
 
 
@@ -38,14 +38,14 @@ def needsEndpoint():
     return 'No endpoint specified in the URL!\n'
 
 
-@app.route('/<endpoint>', defaults={'projectID': 'emptyToken'})
-@app.route('/<endpoint>/<projectID>')
-def index(endpoint, projectID):
+@app.route('/<endpoint>', defaults={'token': 'emptyToken'})
+@app.route('/<endpoint>/<token>')
+def index(endpoint, token):
     """Adds a deque to the shared dictionary, D, and performs a
     transfer via http back to client"""
 
     #Verify that client curled with correct args
-    if (projectID == 'emptyToken') and (AUTH_REQUIRED):
+    if (token == 'emptyToken') and (AUTH_REQUIRED):
         return 'Unable to authenticate token!'
 
     if endpoint not in D.keys():
@@ -53,7 +53,7 @@ def index(endpoint, projectID):
 
     #Initialize client object
     C = Client()
-    C.projectID = projectID
+    C.projectID = ''#token
 
     #Generate a chunked http response for the client
     def generate():

@@ -15,11 +15,19 @@ import logging
 from yaml import load
 from flask import Flask, Response
 from resources.client import Client
+from flask_rax_keystone import FlaskKeystone as FK
 
 
-app = Flask(__name__)
-pathToYamlConfig = 'config.yml'
+#Initialize app with or without Keystone Authentication
 AUTH_REQUIRED = False
+
+if AUTH_REQUIRED:
+    app = FK(Flask(__name__))
+else:
+    app = Flask(__name__)
+
+
+pathToYamlConfig = 'config.yml'
 D = {}
 
 
@@ -38,22 +46,16 @@ def needsEndpoint():
     return 'No endpoint specified in the URL!\n'
 
 
-@app.route('/<endpoint>', defaults={'token': 'emptyToken'})
-@app.route('/<endpoint>/<token>')
-def index(endpoint, token):
+@app.route('/<endpoint>')
+def index(endpoint):
     """Adds a deque to the shared dictionary, D, and performs a
     transfer via http back to client"""
-
-    #Verify that client curled with correct args
-    if (token == 'emptyToken') and (AUTH_REQUIRED):
-        return 'Unable to authenticate token!'
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
 
     #Initialize client object
     C = Client()
-    C.projectID = ''#token
 
     #Generate a chunked http response for the client
     def generate():
@@ -61,16 +63,14 @@ def index(endpoint, token):
         addDequeToDict(endpoint, C)
 
         while True:
-
             if len(C.deque) > 0:
                 event = C.deque.popleft()
 
-                if (event['_context_project_id'] == C.projectID) or (not AUTH_REQUIRED):
-                    try:
-                        yield str(event) + '\n\n'
-                    except GeneratorExit:
-                        app.logger.debug('Detected client disconnect.')
-                        break
+                try:
+                    yield str(event) + '\n\n'
+                except GeneratorExit:
+                    app.logger.debug('Detected client disconnect.')
+                    break
 
         #Remove the client's deque from the shared dictionary
         D[endpoint].remove(C.deque)

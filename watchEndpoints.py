@@ -12,20 +12,20 @@ import os
 import sys
 import threading
 import logging
+from keystonemiddleware import auth_token
 from yaml import load
 from flask import Flask, Response
 from resources.client import Client
-from flask_rax_keystone import FlaskKeystone as FK
+from werkzeug.contrib import fixers
 
 
 #Initialize app with or without Keystone Authentication
-AUTH_REQUIRED = False
+AUTH_REQUIRED = True
 
+app = Flask(__name__) 
 if AUTH_REQUIRED:
-    app = FK(Flask(__name__))
-else:
-    app = Flask(__name__)
-
+    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app)
+    app.wsgi_app = fixers.ProxyFix(app.wsgi_app)
 
 pathToYamlConfig = 'config.yml'
 D = {}

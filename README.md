@@ -31,25 +31,19 @@ More info [here](https://docs.openstack.org/mitaka/networking-guide/config-lbaas
 More info on gunicorn args [here](http://docs.gunicorn.org/en/stable/settings.html).
 
 ### Client:
-For ease of testing purposes, 
-run the user.py script. Pass it an endpoint as an argument:
 
-`python user.py port`
+If Keystone authentication is on, use:
 
-In production,
-curl the url:
+`curl http://127.0.0.1:5000/endpoint -H "X-Auth-Token: $A_VALID_TOKEN"`
+
+If Keystone authentication is off, use:
 
 `curl http://127.0.0.1:5000/endpoint`
 
-or
-
-`curl http://127.0.0.1:5000/someTokenHere/endpoint`
 
 _Notes:_
 
 &nbsp;&nbsp;&nbsp;&nbsp; _Authentication can be enabled or disabled from the watchEndpoints.py script_
-
-&nbsp;&nbsp;&nbsp;&nbsp; _If authentication is disabled, passing a token is optional_
 
 &nbsp;&nbsp;&nbsp;&nbsp; _Client and server may be terminated by a keyboard interrupt_
 
@@ -60,4 +54,5 @@ _Notes:_
 ### Project Architecture:
 <p align="center"><img src="https://github.com/erj826/WEaaS/blob/master/resources/Architecture.png" width="650"/></p>
 
+#### More coming soon...
 ***

@@ -24,7 +24,7 @@ AUTH_REQUIRED = True
 
 app = Flask(__name__) 
 if AUTH_REQUIRED:
-    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app)
+    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, "api-paste.ini")
     app.wsgi_app = fixers.ProxyFix(app.wsgi_app)
 
 pathToYamlConfig = 'config.yml'

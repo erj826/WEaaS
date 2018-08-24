@@ -29,6 +29,7 @@ if AUTH_REQUIRED:
     app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, conf)
     app.wsgi_app = fixers.ProxyFix(app.wsgi_app)
 
+
 pathToYamlConfig = 'config.yml'
 D = {}
 

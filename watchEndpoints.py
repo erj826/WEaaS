@@ -21,7 +21,7 @@ from werkzeug.contrib import fixers
 
 import configparser
 config = configparser.ConfigParser()
-config.read('api-paste.ini')
+config.read('keyConfig.ini')
 
 #Initialize app with or without Keystone Authentication
 AUTH_REQUIRED = True

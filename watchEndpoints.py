@@ -17,18 +17,16 @@ from yaml import load
 from flask import Flask, Response
 from resources.client import Client
 from werkzeug.contrib import fixers
+from oslo_config import cfg
 
-
-import configparser
-config = configparser.ConfigParser()
-config.read('keyConfig.ini')
 
 #Initialize app with or without Keystone Authentication
 AUTH_REQUIRED = True
+conf = dict(cfg.CONF.keystone_authtoken)
 
 app = Flask(__name__) 
 if AUTH_REQUIRED:
-    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, config)
+    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, conf)
     app.wsgi_app = fixers.ProxyFix(app.wsgi_app)
 
 pathToYamlConfig = 'config.yml'

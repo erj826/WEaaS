@@ -24,6 +24,9 @@ More info [here](https://docs.openstack.org/mitaka/networking-guide/config-lbaas
 
 ## Usage
 
+### Setting up Authentication:
+[Request a token using the Keystone api.](https://docs.openstack.org/keystone/pike/api_curl_examples.html)
+
 ### Admin: 
 #### To start up the gunicorn app server, run:
 `gunicorn -b 127.0.0.1:5000 --threads 8 watchEndpoints:app`

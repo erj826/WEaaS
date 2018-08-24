@@ -8,7 +8,6 @@
 
 import itertools
 import resources.rabbitListener as listener
-import os
 import sys
 import threading
 import logging

@@ -19,12 +19,16 @@ from resources.client import Client
 from werkzeug.contrib import fixers
 
 
+import configparser
+config = configparser.ConfigParser()
+config.read('api-paste.ini')
+
 #Initialize app with or without Keystone Authentication
 AUTH_REQUIRED = True
 
 app = Flask(__name__) 
 if AUTH_REQUIRED:
-    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, "api-paste.ini")
+    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, config)
     app.wsgi_app = fixers.ProxyFix(app.wsgi_app)
 
 pathToYamlConfig = 'config.yml'

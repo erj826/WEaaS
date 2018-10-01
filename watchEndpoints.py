@@ -79,7 +79,7 @@ def index(endpoint):
 ############################################################################
 
 
-def authenticate(token):
+def authenticate(x_auth_token):
     """Attempts to authenticate client using keystoneauth1"""
     try:
         auth_url = 'http://192.168.2.4/identity'

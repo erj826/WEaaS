@@ -11,37 +11,14 @@ import resources.rabbitListener as listener
 import sys
 import threading
 import logging
-from keystonemiddleware import auth_token
 from yaml import load
-from flask import Flask, Response
+from flask import Flask, Response, request
 from resources.client import Client
-from werkzeug.contrib import fixers
-from oslo_config import cfg
-from oslo_config import types
-
-
-#Configure oslo
-PortType = types.Integer(1, 65535)
-
-common_opts = [
-    cfg.StrOpt('bind_host',
-               default='0.0.0.0',
-               help='IP address to listen on.'),
-    cfg.Opt('bind_port',
-            type=PortType,
-            default=9292,
-            help='Port number to listen on.')
-]
-
-
-#Initialize app with or without Keystone Authentication
-AUTH_REQUIRED = True
-conf = dict(cfg.CONF.keystone_authtoken)
-
-app = Flask(__name__) 
-if AUTH_REQUIRED:
-    app.wsgi_app = auth_token.AuthProtocol(app.wsgi_app, conf)
-    app.wsgi_app = fixers.ProxyFix(app.wsgi_app)
+from keystoneauth1 import identity
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
+from keystoneclient.v3 import client as keyClient
+from aiohttp import web
 
 
 pathToYamlConfig = 'config.yml'
@@ -67,6 +44,10 @@ def needsEndpoint():
 def index(endpoint):
     """Adds a deque to the shared dictionary, D, and performs a
     transfer via http back to client"""
+
+    #Authenticate client
+    x_auth_token = request.headers.get('X-Auth-Token')
+    authenticate(x_auth_token)
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
@@ -96,6 +77,24 @@ def index(endpoint):
 
 
 ############################################################################
+
+
+def authenticate(token):
+    """Attempts to authenticate client using keystoneauth1"""
+    try:
+        auth_url = 'http://192.168.2.4/identity'
+        project_id = 'demo'
+        auth = identity.Token(auth_url, token=x_auth_token, project_id=project_id)
+        sess = session.Session(auth=auth)
+        ks = keyClient.Client(session=sess, project_id=project_id)
+        ks.authenticate(token=x_auth_token)
+
+    except Exception as ex:
+        return web.json_response(status=401, data={
+            "error": {
+            "message": ("Not authorized. Reason: {}".format(str(ex)))
+            }
+        })
 
 
 def addDequeToDict(endpoint, C):

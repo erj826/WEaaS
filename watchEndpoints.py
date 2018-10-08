@@ -18,7 +18,9 @@ from keystoneauth1 import identity
 from keystoneauth1 import session
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client as keyClient
-from aiohttp import web
+
+
+app = Flask(__name__) 
 
 
 pathToYamlConfig = 'config.yml'
@@ -45,9 +47,13 @@ def index(endpoint):
     """Adds a deque to the shared dictionary, D, and performs a
     transfer via http back to client"""
 
+    app.logger.debug('Request made for %s events.' % endpoint) 
+
     #Authenticate client
     x_auth_token = request.headers.get('X-Auth-Token')
-    authenticate(x_auth_token)
+    a = authenticate(x_auth_token)
+    if a == 1:
+        return "Unauthorized request.\n"
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
@@ -88,13 +94,11 @@ def authenticate(x_auth_token):
         sess = session.Session(auth=auth)
         ks = keyClient.Client(session=sess, project_id=project_id)
         ks.authenticate(token=x_auth_token)
-
+        app.logger.debug('Request authorized')
+        return 0
     except Exception as ex:
-        return web.json_response(status=401, data={
-            "error": {
-            "message": ("Not authorized. Reason: {}".format(str(ex)))
-            }
-        })
+        app.logger.debug('Request unauthorized!\n') 
+        return 1
 
 
 def addDequeToDict(endpoint, C):

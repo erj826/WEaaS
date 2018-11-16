@@ -50,10 +50,10 @@ def index(endpoint):
     app.logger.debug('Request made for %s events.' % endpoint) 
 
     #Authenticate client
-    x_auth_token = request.headers.get('X-Auth-Token')
-    a = authenticate(x_auth_token)
-    if a == 1:
-        return "Unauthorized request.\n"
+    #x_auth_token = request.headers.get('X-Auth-Token')
+    #a = authenticate(x_auth_token)
+    #if a == 1:
+    #    return "Unauthorized request.\n"
 
     if endpoint not in D.keys():
         return 'Invalid endpoint!'
